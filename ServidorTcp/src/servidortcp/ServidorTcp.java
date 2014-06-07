@@ -7,11 +7,18 @@
 package servidortcp;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.StringTokenizer;
@@ -38,19 +45,43 @@ public class ServidorTcp {
                 String user= tkn.nextToken();
                 String ip= tkn.nextToken();
                 String msje= tkn.nextToken();
+                System.out.println(ip + " "+user+ " "+msje+" "+ '\n');
                 
-                FileWriter f= null;
-                PrintWriter pw=null;
+                Writer writer = null;
+
                 try {
-                    f = new FileWriter("mensaje.txt",true);
-                    pw= new PrintWriter(f);
-                    pw.println(user + " "+ip+ " "+msje+" "+ '\n');
-                }catch(Exception e){
-                    System.out.println(e);
+
+                    writer = new BufferedWriter(new OutputStreamWriter(
+                          new FileOutputStream("mensaje.txt",true), "utf-8"));
+                        writer.write(ip+ " ");
+                        writer.write(user+ " ");
+                        writer.write(msje);
+                        writer.write("\r\n");
+                } catch (IOException ex) {
+                  // report
+                } finally {
+                   try {writer.close();} catch (Exception ex) {}
                 }
             }
             else if(tkn.countTokens() >= 2&&protocolo.equals("recibido")){
+                //IP del cliente;
+                String  user=tkn.nextToken();
+                        
+                FileInputStream msj= new FileInputStream("mensaje.txt");
+                DataInputStream message = new DataInputStream(msj);
+                BufferedReader br= new BufferedReader(new InputStreamReader(message));
+                StringTokenizer tk=null;
                 
+
+                //leer las lineas del archivo y encontrar la ip destino = a user                
+                String linea;
+                while((linea=br.readLine())!=null){
+                    tk=new StringTokenizer(linea);
+                    if(tk.nextToken().equals(user)){
+                        os.writeBytes(tk.nextToken()+" "+tk.nextToken());
+                    }
+                }
+                br.close();
             }
         }   
     }
