@@ -32,23 +32,18 @@ public class ServidorTcp {
         String protocolo;
         while(true){
             Socket sk2= skt.accept();
-            BufferedReader in= new BufferedReader(new InputStreamReader(sk2.getInputStream()));
             DataOutputStream os = new DataOutputStream(sk2.getOutputStream());
+            BufferedReader in= new BufferedReader(new InputStreamReader(sk2.getInputStream()));
             mensaje= in.readLine();
-            System.out.println(mensaje);
             
             StringTokenizer tkn= new StringTokenizer(mensaje);
             protocolo=tkn.nextToken();
-            
             if(tkn.countTokens() >= 2&&protocolo.equals("enviar")){
-                System.out.println("enviado");
                 String user= tkn.nextToken();
                 String ip= tkn.nextToken();
                 String msje= tkn.nextToken();
                 System.out.println(ip + " "+user+ " "+msje+" "+ '\n');
-                
                 Writer writer = null;
-
                 try {
 
                     writer = new BufferedWriter(new OutputStreamWriter(
@@ -63,24 +58,26 @@ public class ServidorTcp {
                    try {writer.close();} catch (Exception ex) {}
                 }
             }
-            else if(tkn.countTokens() >= 2&&protocolo.equals("recibido")){
+            else if(tkn.countTokens() >= 1&&protocolo.equals("recibido")){
                 //IP del cliente;
                 String  user=tkn.nextToken();
-                        
+                       
                 FileInputStream msj= new FileInputStream("mensaje.txt");
                 DataInputStream message = new DataInputStream(msj);
                 BufferedReader br= new BufferedReader(new InputStreamReader(message));
                 StringTokenizer tk=null;
-                
-
+                System.out.println(protocolo+" "+user);
                 //leer las lineas del archivo y encontrar la ip destino = a user                
                 String linea;
+                String output="";
                 while((linea=br.readLine())!=null){
                     tk=new StringTokenizer(linea);
+                    
                     if(tk.nextToken().equals(user)){
-                        os.writeBytes(tk.nextToken()+" "+tk.nextToken());
+                        output=tk.nextToken()+" "+tk.nextToken()+" "+output+" ";
                     }
                 }
+                os.writeBytes(output+'\n');
                 br.close();
             }
         }   

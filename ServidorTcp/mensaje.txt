@@ -1,0 +1,7 @@
+192.168.0.11 Ivan hola
+192.168.0.11 Joaquin hola2
+192.168.0.11 nico como
+192.168.0.15 bruno mande
+192.168.0.16 carlos comoestas
+185.135.124.0 asdf casg
+192.168.0.15 Nico blabla
