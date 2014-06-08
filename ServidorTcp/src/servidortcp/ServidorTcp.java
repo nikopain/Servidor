@@ -55,9 +55,17 @@ public class ServidorTcp {
                 } catch (IOException ex) {
                   // report
                 } finally {
-                   try {writer.close();} catch (Exception ex) {}
+                   try {
+                       writer.close();
+                   } catch (Exception ex) {
+                   }
                 }
-            }
+            }/*
+            else if(tkn.countTokens()>=1&&protocolo.equals("archivo")){
+                String ip = tkn.nextToken();
+                String path = tkn.nextToken();
+                System.out.println("Archivo"+path+" enviado para dueño de ip: "+ip);
+            }*/
             else if(tkn.countTokens() >= 1&&protocolo.equals("recibido")){
                 //IP del cliente;
                 String  user=tkn.nextToken();
